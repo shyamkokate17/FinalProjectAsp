@@ -1,4 +1,17 @@
-﻿@model Clean.UpIndia.Models.Volunteer
+﻿@using Microsoft.AspNetCore.Identity
+@using Clean.UpIndia.Models.Enums
+@*To find the user is logged in*@
+@inject SignInManager<IdentityUser> _loginUserStatus
+@*Get the user properties*@
+@inject UserManager<IdentityUser> _userManager
+@{
+    bool isLoggedIn = _loginUserStatus.IsSignedIn(this.User); 
+    bool isUserAdmin = false;
+    IdentityUser user = await _userManager.GetUserAsync(this.User); 
+    if (user != null) { isUserAdmin = await _userManager.IsInRoleAsync(user, MyIdentityRoleNames.AppAdmin.ToString()); }
+}
+
+@model Clean.UpIndia.Models.Volunteer
 
 @{
     ViewData["Title"] = "Details";
@@ -43,6 +56,9 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    @if (isUserAdmin)
+    {
+        <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
+    }
     <a asp-action="Index">Back to List</a>
 </div>

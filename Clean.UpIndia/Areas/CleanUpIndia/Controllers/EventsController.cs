@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace Clean.UpIndia.Areas.CleanUpIndia.Controllers
 {
     [Area("CleanUpIndia")]
-    [Authorize(Roles = "AppAdmin")]
+    [Authorize]
     public class EventsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -60,6 +60,7 @@ namespace Clean.UpIndia.Areas.CleanUpIndia.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        
         public async Task<IActionResult> Create([Bind("EventId,EventName,EventDescription,EventDate,LocalityId")] Event function)
         {
             if (ModelState.IsValid)

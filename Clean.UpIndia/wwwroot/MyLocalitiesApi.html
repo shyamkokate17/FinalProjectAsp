@@ -1,0 +1,246 @@
+﻿<!--<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+</head>
+<body>
+
+</body>
+</html>-->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>API Localities</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+
+    <div class="container">
+
+        <h1>List of Locality</h1>
+
+        <table id="myTable" class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th class="col-2">Locality ID</th>
+                    <th class="col-8">Locality Name</th>
+                    <th class="col-2 text-center">
+                        <button class="btn btn-sm btn-primary" onclick="fAddNew()">Add new</button>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+
+        <p><a href="/">Back to home page</a></p>
+    </div>
+
+
+
+    <!-- The Modal -->
+    <div class="modal fade" id="myModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Localities Information</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+           
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="txtLocalityId" class="control-label">Locality ID:</label>
+                            <input id="txtLocalityId" name="txtLocalityId" class="form-control" readonly="readonly" />
+                        </div>
+                        <div class="form-group">
+                            <label for="txtLocalityName" class="control-label">Locality Name:</label>
+                            <input id="txtLocalityName" name="txtLocalityName" class="form-control" />
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-dismiss="modal" onclick="fSave()">Save</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <script>
+
+        var currentMode = '';
+
+        function fAddNew() {
+
+            currentMode = 'NEW';
+
+            $('#txtLocalityId').val('');
+            $('#txtLocalityName').val('');
+
+            // popup the modal window
+            $('#myModal').modal();
+        }
+
+        function fSave() {
+
+            if (currentMode === 'NEW') {
+                let data = {
+                  
+                    "localityName": $('#txtLocalityName').val()
+                };
+
+                console.log(data);
+
+                // Save the data using the API
+                const xmlHttp = new XMLHttpRequest();
+                const url = '/api/Localities';
+                xmlHttp.open('POST', url);
+                xmlHttp.setRequestHeader('content-type', 'application/json');
+                xmlHttp.send(JSON.stringify(data));
+                xmlHttp.onload = function () {
+                    console.log(xmlHttp.responseText);
+                    let responseObject = JSON.parse(xmlHttp.responseText);
+                    console.log(responseObject.statusCode);
+                    if (responseObject.statusCode == 201) {         // HTTP Response Code 201 "CREATED"
+                        fLoadData();                                // repopulate the HTML Table
+                        alert("Added new Locality ID: " + responseObject.value.localityId);
+                    }
+                };
+            }
+            else if (currentMode === 'EDIT') {
+                let data = {
+                    "localityId": parseInt( $('#txtLocalityId').val() ),
+                    "localityName": $('#txtLocalityName').val()
+                };
+
+                const xmlHttp = new XMLHttpRequest();
+                const url = '/api/Localities/' + data.localityId           // HTTP PUT 
+                xmlHttp.open('PUT', url);
+                xmlHttp.setRequestHeader('content-type', 'application/json');
+                xmlHttp.send(JSON.stringify(data));
+                xmlHttp.onload = function () {
+                    console.log(xmlHttp.responseText);                       // nothing is returned from the API
+                    if (xmlHttp.status == 204)                               // HTTP RESPONSE 204 "No Content"
+                    {
+                        alert('Successfully updated!!!');
+                        fLoadData();            // reload the HTML Table.
+                    }
+                };
+            }
+
+
+        }
+
+        function fDelete(localityIdToDelete) {
+
+            if (!confirm("Are you sure you want to delete?"))
+            {
+                return;         // exit the function, since user does not want to delete.
+            }
+
+            // delete the selected category.
+            let data = {
+                "id": localityIdToDelete
+            };
+            const xmlHttp = new XMLHttpRequest();
+            const url = '/api/Localities/' + localityIdToDelete;        // HTTP REST API DELETE 
+            xmlHttp.setRequestHeader('content-type', 'application/json');
+            xmlHttp.send(JSON.stringify(data));
+            xmlHttp.onload = function () {
+                let responseObject = JSON.parse(xmlHttp.responseText);
+                alert("Deleted this ID: " + responseObject.localityId);
+                fLoadData();
+            };
+        }
+
+        
+        function fEdit(localityToEdit) {
+
+            currentMode = 'EDIT';
+
+            let data = {
+                "id": localityToEdit
+            };
+            const xmlHttp = new XMLHttpRequest();
+            const url = '/api/Localities/' + localityToEdit;        // HTTP REST API GET
+            xmlHttp.open('GET', url);
+            xmlHttp.setRequestHeader('content-type', 'application/json');
+            xmlHttp.send(JSON.stringify(data));
+            xmlHttp.onload = function () {
+                let responseObject = JSON.parse(xmlHttp.responseText);
+
+                // populate the input fields in the modal window
+                $('#txtLocalityId').val(responseObject.localityId);
+                $('#txtLocalityName').val(responseObject.localityName);
+
+                $('#myModal').modal("show");
+            }
+        }
+
+
+        function fDisplayData(theJsonData) {
+
+            let strHTML = '';
+
+            $.each(theJsonData, function (idx, elem) {
+                console.log(elem);                       // for debugging purpose
+
+                strHTML
+                    += '<tr>'
+                    + '<td>' + elem.localityId + '</td>'
+                    + '<td>' + elem.localityName + '</td>'
+                    + '<td class="text-center">'
+                    + '<button type="button" class="btn btn-danger btn-sm" onclick="fEdit(' + elem.categoryId + ')">Edit</button>'
+                    + '&nbsp;'
+                    + '<button type="button" class="btn btn-secondary btn-sm" onclick="fDelete('+ elem.categoryId +')">Delete</button>'
+                    + '</td>'
+                    + '</tr>';
+            });
+
+            // Remove all existing rows in the Table
+            $('#myTable tbody tr').remove();
+
+            // Add the generated table row contents.
+            $('#myTable tbody').append(strHTML);
+        }
+
+
+        function fLoadData() {
+            var xmlHttp = new XMLHttpRequest();
+                 xmlHttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    let theData = JSON.parse(this.responseText);
+                    console.log(theData);                           // for debugging
+                    // alert("Received Data from my APi");     // for debugging
+                    fDisplayData(theData);
+                }
+                 };
+            xmlHttp.open("GET", "/api/localities");
+            xmlHttp.send();
+        }
+
+        $(document).ready(() => {
+            fLoadData();
+        });
+
+    </script>
+
+</body>
+</html>

@@ -1,18 +1,7 @@
 ﻿@page
-@model RegisterModel
+@model RegisterAdminModel
 @{
-    ViewData["Title"] = "Register";
-}
-
-@section BodyStyle{
-    <style>
-        body {
-            background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR426riaKKHHMt4VHGthmW6G09swiF_pYC_Gg&usqp=CAUhttps://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMQvhFTzWAyD-zCMEwi3RB5tRMh-lgdcePZg&usqp=CAU');
-            background-repeat: no-repeat;
-            background-size: cover;
-            background-position: center center;
-        }
-    </style>
+    ViewData["Title"] = "Register an Admin";
 }
 
 <h1>@ViewData["Title"]</h1>
@@ -49,9 +38,10 @@
                 if ((Model.ExternalLogins?.Count ?? 0) == 0)
                 {
                     <div>
-                    <h2 class="prog-heading">Read to Participants...</h2>
-                        <p>There are three steps to be taken while joining the campaign. Firstly you register your intent, secondly you decide the facility where you would like to volunteer and lastly you can give your feedback / check your contribution.</p>
-                       
+                        <p>
+                            Now, you can participate this organization as Member,<br />
+                            So, Firstly register here......
+                        </p>
                     </div>
                 }
                 else

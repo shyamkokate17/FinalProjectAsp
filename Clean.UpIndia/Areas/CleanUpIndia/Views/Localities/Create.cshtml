@@ -3,11 +3,22 @@
 @{
     ViewData["Title"] = "Create";
 }
-
+@section BodyStyle{
+    <style>
+        body {
+            background-image: url('https://regentsvc.com/wp-content/uploads/layerslider/My-second-slider-wide/slider-bg11-800x401.jpg');
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center center;
+        }
+    </style>
+}
 <h1>Create</h1>
 
 <h4>Locality</h4>
 <hr />
+
+
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">

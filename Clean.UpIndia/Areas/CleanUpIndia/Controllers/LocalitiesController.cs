@@ -13,7 +13,7 @@ using System.Data;
 namespace Clean.UpIndia.Areas.CleanUpIndia.Controllers
 {
     [Area("CleanUpIndia")]
-    [Authorize(Roles = "AppAdmin")]
+    [Authorize(Roles = "AppAdmin")]       // Checked if user has logged in and Is a User with Admin Role
     public class LocalitiesController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -60,6 +60,15 @@ namespace Clean.UpIndia.Areas.CleanUpIndia.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("LocalityId,LocalityName")] Locality locality)
         {
+            locality.LocalityName = locality.LocalityName.Trim(); // removes addtional spaces and trim data
+
+            bool isDuplicateExists = _context.Localities.Any(m => m.LocalityName == locality.LocalityName);
+            if (isDuplicateExists)
+            {
+                ModelState.AddModelError("LocalityName", "Duplicate City found!!! Please add new one...");
+            }
+
+
             if (ModelState.IsValid)
             {
                 _context.Add(locality);
@@ -153,5 +162,7 @@ namespace Clean.UpIndia.Areas.CleanUpIndia.Controllers
         {
             return _context.Localities.Any(e => e.LocalityId == id);
         }
+
+        
     }
 }

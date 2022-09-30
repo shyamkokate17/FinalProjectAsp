@@ -2,13 +2,23 @@
 @using Clean.UpIndia.Models.Enums
 @inject SignInManager<IdentityUser> _signInManager
 @inject UserManager<IdentityUser> _userManager
+
 @{
     bool isLoggedIn = _signInManager.IsSignedIn(this.User);
+    bool isUserAdmin = false;
 
-    IdentityUser user = _userManager.GetUserAsync(this.User);
-    bool isUserAdmin = await _userManager.IsInRoleAsync(user, MyIdentityRoleNames.AppAdmin.ToString());
+    IdentityUser user = await _userManager.GetUserAsync(this.User);
+   
+    if (user != null)
+    {
+
+     isUserAdmin = await _userManager.IsInRoleAsync(user, MyIdentityRoleNames.AppAdmin.ToString());
 
     }
+ }
+
+
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -18,46 +28,111 @@
     <title>@ViewData["Title"] - CleanUpIndia</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+
+    @RenderSection("HeadScripts", required: false)
+    @RenderSection("BodyStyle", required: false)
+
 </head>
 
 <body style="background-color:aliceblue">
+   
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">Clean.UpIndia</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                <a class="navbar-brand" asp-area="" asp-page="/Index">CleanUpIndia</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+               
+                
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-                    <a class="navbar-brand" href="#">
+                    
+                    
+                    
+                    <section class="navigation-wrapper">
+
+
+                        <div class="primary-nav" style="padding: 2.5px 0px;">
+
+
+                            <div class="container clearfix" id="b-header">
+                                <div class="float-left d-flex h-85">
+                                    <img src="https://sbm.gov.in/shs/shs2022/images/logos-jal.png" alt="National Emblem of India logo" class="align-self-center logo-india" style="height: 55px;">
+                                </div>
+                               @* <div class="float-left d-flex h-90">
+                                    <b class="align-self-center pl-1" style="margin-left: 70px;"></b>
+
+                                        <p class="navbar-brand" style="color: black!IMPORTANT; text-align: center">
+
+                                            <strong class="title-Swachhata">Swachhata Hi Seva</strong><br>
+                                            <strong class="title-Swachhata">15th Sept. 2022 to 5th Oct. 2022</strong>
+                                        </p>                                   
+                                </div>
+*@
+                                <div class="float-right d-flex h-60" style=" margin-top: 4px;">
+                                  
+                                    <img src="https://sbm.gov.in/shs/shs2022/images/logo_azadi.png" style="width: 61px;" alt="">
+                                    <img src="https://sbm.gov.in/shs/shs2022/images/Logo-SBM.png" style="width: 100px;" alt="">
+                                </div>
+                            </div>
+
+                        </div>
+                    </section>
+                    
+                    @* <a class="navbar-brand" href="#">
                         <img src="~/img/png SwachChas.png" alt="logo" style="width:90px;">
-                    </a>
+                    </a>*@
+                 @*<a href="/">
+                        <img src="https://sbmurban.org/themes/demo/assets/v2/images/2.png" alt="">
+                   </a>
+                   *@
 
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
                         </li>
-                        <li class="nav-item">
+                       @* <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
                         </li>
-
+*@
                         <li class="nav-item dropdown">
                             <a class="nav-link text-dark dropdown-toggle" data-toggle="dropdown" href="#">
-                                User</a>
+                                Paticipate
+                            </a>
                             <div class="dropdown-menu">
-@if(isLoggedIn){
-                                <a class="dropdown-item"
+
+
+
+        @if(isLoggedIn){
+
+                             @if (isUserAdmin)
+                             {
+
+                                        <a class="dropdown-item btn-dark"
                                    asp-area="CleanUpIndia" asp-controller="Localities" asp-action="Index">Localities</a>
-                               
-                                <a class="dropdown-item"
-                                   asp-area="CleanUpIndia" asp-controller="Volunteers" asp-action="Index">Volunteers</a>
-                                <a class="dropdown-item"
+
+                                      @*  <a class="dropdown-item btn-danger"
+                                   asp-area="CleanUpIndia" asp-controller="Volunteers" asp-action="Index">Volunteers</a>*@
+                                        <a class="dropdown-item"
                                    asp-area="CleanUpIndia" asp-controller="PublicToilets" asp-action="Index">PublicToilets</a>
-                                <a class="dropdown-item"
+                                        <a class="dropdown-item"
+                                   asp-area="CleanUpIndia" asp-controller="Volunteers" asp-action="Index">Volunteer List</a>
+                                   <div class="dropdown-divider"></div>
+                                
+                                  <a class="dropdown-item" href="~/MyLocalitiesApi.html">Localities API</a>
+
+
+
+                              }
+                                    <a class="dropdown-item btn-danger"
+                                   asp-area="CleanUpIndia" asp-controller="Volunteers" asp-action="Create">Volunteers</a>
+                                 
+                                   
+                                   <a class="dropdown-item btn-primary"
                                    asp-area="CleanUpIndia" asp-controller="Responses" asp-action="Index">Comments</a>
-       }                     
-                                <a class="dropdown-item"
+      }                     
+                                <a class="dropdown-item btn-secondary"
                                    asp-area="CleanUpIndia" asp-controller="Events" asp-action="Index"> Events</a>
                                </div>
         
@@ -65,6 +140,9 @@
                         </li>
 
                     </ul>
+
+                  
+
                 </div>
             </div>
 
@@ -88,5 +166,6 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
 
     @RenderSection("Scripts", required: false)
+
 </body>
 </html>

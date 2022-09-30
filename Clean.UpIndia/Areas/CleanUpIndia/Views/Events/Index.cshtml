@@ -1,15 +1,94 @@
-﻿@model IEnumerable<Clean.UpIndia.Models.Event>
+﻿
+@using Microsoft.AspNetCore.Identity
+@using Clean.UpIndia.Models.Enums
+@*To find the user is logged in*@
+@inject SignInManager<IdentityUser> _loginUserStatus
+@*Get the user properties*@
+@inject UserManager<IdentityUser> _userManager
+@{
+   
+    
+    
+bool isLoggedIn = _loginUserStatus.IsSignedIn(this.User); 
+bool isUserAdmin = false;
+IdentityUser user = await _userManager.GetUserAsync(this.User); 
+if (user != null) 
+{ isUserAdmin = await _userManager.IsInRoleAsync(user, MyIdentityRoleNames.AppAdmin.ToString()); }
+
+}
+
+
+
+@model IEnumerable<Clean.UpIndia.Models.Event>
 
 @{
     ViewData["Title"] = "Index";
 }
+@section BodyStyle{
+    <style>
+        body {
+            background-image: url('https://pbs.twimg.com/ext_tw_video_thumb/1565367898029588487/pu/img/C7XL4NsV6Vjd0ZG3.jpg');
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center center;
+        }
+    </style>
+}
 
-<h1>Index</h1>
+<h1>OurCampaign</h1>
+@if (isUserAdmin){
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
+    <p>
+        <a button class="btn btn-primary" asp-action="Create">New Event</a>
+    </p>
+}
+
+
+    <div class="card-columns">
+    @foreach (var item in Model)
+    {
+        <div class="card">
+            <div class="card-header" style="background-color:cadetblue">
+                Event Id: @item.EventId
+            </div>
+            <div class="card-body" style="background-color:burlywood">
+                @Html.DisplayNameFor(modelItem => item.EventName) : @item.EventName
+                <br />
+                @Html.DisplayNameFor(modelItem => item.EventDate) : @item.EventDate
+                <br>
+                @Html.DisplayNameFor(modelItem=> item.Locality.LocalityName) : @item.Locality.LocalityName
+                <br>
+               
+                
+            </div>
+
+            <div class="card-footer" style="background-color:cadetblue">
+
+                @if (isUserAdmin)
+                {
+                    <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.EventId">Edit</a>
+
+                    <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.EventId">Delete</a>
+
+
+                }
+             
+                <a class="btn btn-sm btn-primary" asp-action="Details" asp-route-id="@item.EventId">Event Details</a>
+               
+            </div>
+        </div>
+
+    }
+</div>
+<a asp-area="CleanUpIndia" asp-controller="Events" asp-action="Index">List of Events</a>
+
+
+
+
+
+
+@*<table class="table">
+
     <thead>
         <tr>
             <th>
@@ -43,11 +122,15 @@
                 @Html.DisplayFor(modelItem => item.Locality.LocalityName)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.EventId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.EventId">Details</a> |
+                <a asp-action="Edit" asp-route-id="@item.EventId">Edit</a>
+                |
+                <a asp-action="Details" asp-route-id="@item.EventId">Details</a>
+                |
                 <a asp-action="Delete" asp-route-id="@item.EventId">Delete</a>
             </td>
         </tr>
 }
     </tbody>
-</table>
+</table>*@
+
+

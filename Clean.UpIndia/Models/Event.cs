@@ -2,6 +2,8 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using System;
+using Clean.UpIndia.ValidationAttri;
+
 
 namespace Clean.UpIndia.Models
 
@@ -15,7 +17,7 @@ namespace Clean.UpIndia.Models
         public int EventId { get; set; }
 
         [Required(ErrorMessage = "{0} Cannot be blank!!!")]
-        [StringLength(20, ErrorMessage = "{0} cannot be more than {1} characters!!!")]
+        [StringLength(20, ErrorMessage ="{0} cannot be more than {1} characters!!!")]
         [Display(Name = "Event Name")]
         public string EventName { get; set; }
 
@@ -23,10 +25,15 @@ namespace Clean.UpIndia.Models
         [StringLength(1000, ErrorMessage = "{0} cannot be empty")]
         [Display(Name = "Event Description")]
         public string EventDescription { get; set; }
+        
+      
 
-
-        [Required]
+        [Required(ErrorMessage ="{0} cannot be empty!!!")]
+    //    [DisplayFormat(DataFormatString = "{0:mm-dd-yyyy}", ApplyFormatInEditMode = true)]
+    //    [Range(typeof(DateTime), "9/28/2022", "12/31/2022",
+    //ErrorMessage = "Value for {0} must be between {1} and {2}")]
         [Display(Name = "Event Date")]
+        [ValidationOneYear]
         public DateTime EventDate { get; set; }
 
 

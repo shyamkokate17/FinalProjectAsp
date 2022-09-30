@@ -13,7 +13,8 @@ using System.Data;
 namespace Clean.UpIndia.Areas.CleanUpIndia.Controllers
 {
     [Area("CleanUpIndia")]
-    [Authorize(Roles = "AppAdmin")]
+    // [Authorize(Roles = "AppAdmin")]
+                      // Checked if User Logged IN
     public class VolunteersController : Controller
     {
         private readonly ApplicationDbContext _context;

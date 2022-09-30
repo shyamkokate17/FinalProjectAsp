@@ -4,6 +4,16 @@
 @{
     ViewData["Title"] = "Log in";
 }
+@section BodyStyle{
+    <style>
+        body {
+            background-image: url('https://regentsvc.com/wp-content/uploads/layerslider/My-second-slider-wide/slider-bg11-800x401.jpg');
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center center;
+        }
+    </style>
+}
 
 <h1>@ViewData["Title"]</h1>
 <div class="row">
@@ -47,15 +57,15 @@
     </div>
     <div class="col-md-6 col-md-offset-2">
         <section>
-            <h4>Use another service to log in.</h4>
+            <h4>Use another action to log in.</h4>
             <hr />
             @{
                 if ((Model.ExternalLogins?.Count ?? 0) == 0)
                 {
                     <div>
                         <p>
-                            There are no external authentication services configured. See <a href="https://go.microsoft.com/fwlink/?LinkID=532715">this article</a>
-                            for details on setting up this ASP.NET application to support logging in via external services.
+                            Now, you can participate this organization as Member,<br/>
+                             So, Firstly register here......
                         </p>
                     </div>
                 }

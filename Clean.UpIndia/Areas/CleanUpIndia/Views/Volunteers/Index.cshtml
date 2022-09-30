@@ -1,16 +1,40 @@
-﻿@model IEnumerable<Clean.UpIndia.Models.Volunteer>
+﻿@using Microsoft.AspNetCore.Identity
+@using Clean.UpIndia.Models.Enums
+@*To find the user is logged in*@
+@inject SignInManager<IdentityUser> _loginUserStatus
+@*Get the user properties*@
+@inject UserManager<IdentityUser> _userManager
+@{
+    bool isLoggedIn = _loginUserStatus.IsSignedIn(this.User); bool isUserAdmin = false; IdentityUser user = await _userManager.GetUserAsync(this.User); if (user != null) { isUserAdmin = await _userManager.IsInRoleAsync(user, MyIdentityRoleNames.AppAdmin.ToString()); }
+}
+
+
+
+@model IEnumerable<Clean.UpIndia.Models.Volunteer>
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+@section BodyStyle{
+    <style>
+        body {
+            background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcST4r6EjgcMXZVzzWr2qdazQ8uPOZ3xORDbNkp_DCSR0SyrWht1K3PaPpZvg_fMU3OWvVg&usqp=CAU');
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center center;
+        }
+    </style>
+}
+    
+
+<h1>Participants:</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
 </p>
 <table class="table">
-    <thead>
+    <thead style="background-color:cadetblue">
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.Name)
@@ -30,7 +54,7 @@
             <th></th>
         </tr>
     </thead>
-    <tbody>
+    <tbody style="background-color:beige">
 @foreach (var item in Model) {
         <tr>
             <td>
@@ -48,12 +72,18 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Events.EventName)
             </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <td>
+            @if (isUserAdmin){
+                <a class="btn btn-primary" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                <a class="btn btn-secondary" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            }
+          
+                
+                <a class="btn btn-danger" asp-action="Details" asp-route-id="@item.Id">Details</a> 
+               
             </td>
         </tr>
 }
     </tbody>
 </table>
+

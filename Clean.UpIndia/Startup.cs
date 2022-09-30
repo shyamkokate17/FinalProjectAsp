@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,6 +17,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+
+[assembly:ApiConventionType(typeof(DefaultApiConventions))]
 namespace Clean.UpIndia
 
 {
@@ -81,26 +84,26 @@ namespace Clean.UpIndia
                     options.Cookie.Name = "MyAuthCookies";
                 });
 
-            //// Register the MVC Middleware 
-            //// -- Needed for Swagger Documentation Middleware Service
+            // Register the MVC Middleware 
+            // -- Needed for Swagger Documentation Middleware Service
             //// -- Needed for API Support (if applicable)
-            //services
-            //    .AddMvc();
+            services
+                .AddMvc();
 
             // Register the Swagger Documentation Generation Middleware Service
-            //services
-            //    .AddSwaggerGen(config =>
-            //    {
-            //        config.SwaggerDoc("v1", new OpenApiInfo
-            //        {
-            //            Version = "v1",
-            //            Title = "My CleanUpIndia",
-            //            Description = "India Moves towards Model India"
-            //        });
-            //    });
+            services
+                .AddSwaggerGen(config =>
+                {
+                    config.SwaggerDoc("v1", new OpenApiInfo
+                    {
+                        Version = "v1",
+                        Title = "My CleanUpIndia",
+                        Description = "India Moves towards Model India"
+                    });
+                });
 
             //  Register the EmailSender Service to the Dependency Injection Container
-             services.AddSingleton<IEmailSender, MyEmailSenderService>();       // Create once per Application Run
+            services.AddSingleton<IEmailSender, MyEmailSenderService>();       // Create once per Application Run
             // services.AddTransient<IEmailSender, MyEmailSenderService>();    // Create once per User session!
             // services.AddScoped<IEmailSender, MyEmailSenderService>();       // Create once per HTTP Request/Response Cycle
 
@@ -123,6 +126,14 @@ namespace Clean.UpIndia
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            //Add swagger middleware
+            app.UseSwagger();
+            //add Swagger Documentation gen. middleware
+            app.UseSwaggerUI(confi =>
+            {
+                confi.SwaggerEndpoint("/swagger/v1/swagger.json", "CleanUpIndia web V1");
+            });
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

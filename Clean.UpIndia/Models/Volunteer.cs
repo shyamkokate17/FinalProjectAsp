@@ -52,6 +52,8 @@ namespace Clean.UpIndia.Models
 
         [ForeignKey(nameof(Volunteer.EventId))]
         public Event Events { get; set; }
+
+
         
         #endregion
     }

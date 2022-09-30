@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using System.Xml.Linq;
+using System.Text.Json.Serialization;
 
 namespace Clean.UpIndia.Models
 {
@@ -21,6 +22,7 @@ namespace Clean.UpIndia.Models
 
 
         #region Navigation Properties to the Event Model
+        [JsonIgnore]
         public ICollection<Event> Events { get; set; }
 
 
@@ -30,6 +32,7 @@ namespace Clean.UpIndia.Models
 
         #region Navigation Properties to the PublicToilets Model
 
+        [JsonIgnore]
         public ICollection<PublicToilet> PublicToilets { get; set; }
 
         #endregion

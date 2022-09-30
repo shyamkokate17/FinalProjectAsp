@@ -27,6 +27,7 @@ namespace Clean.UpIndia.Models
         public bool IsAvailable { get; set; } = true;
 
         [Display(Name = "Rating")]
+        [Range(1,10,ErrorMessage ="Rating must be below 10")]
         public int Rating { get; set; }
 
 
